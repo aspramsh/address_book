@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AddressBook.Domain.Models
 {
-    public class BaseContact<TAddress, TPhoneNumber> : BaseAuditableModel<int>
+    public abstract class BaseContact<TAddress, TPhoneNumber> : BaseAuditableModel<int>
         where TAddress : new()
         where TPhoneNumber : new()
     {

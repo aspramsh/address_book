@@ -1,10 +1,14 @@
+using AddressBook.Business;
 using AddressBook.DataAccess;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Linq;
 
 namespace AddressBook
 {
@@ -21,13 +25,38 @@ namespace AddressBook
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            services.AddControllers();
+            services.AddAutoMapper(
+                cfg => { cfg.AllowNullCollections = true; },
+                AppDomain.CurrentDomain.GetAssemblies().Where(x =>
+                    x.FullName.Contains(nameof(AddressBook), StringComparison.InvariantCultureIgnoreCase)),
+                ServiceLifetime.Scoped);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(nameof(AddressBook.Api),
+                    builder =>
+                    {
+                        builder.WithOrigins()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowAnyOrigin();
+                    });
+            });
+
+            services
+                .AddControllers()
+                .AddFluentValidation(config =>
+                {
+                    config.RegisterValidatorsFromAssemblyContaining<Startup>();
+                    config.ImplicitlyValidateChildProperties = true;
+                });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AddressBook.Api", Version = "v1" });
             });
             services.AddDatabase(Configuration);
             services.AddRepositories();
+            services.RegisterServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
