@@ -3,6 +3,8 @@ using AddressBook.DataAccess;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +35,7 @@ namespace AddressBook
 
             services.AddCors(options =>
             {
-                options.AddPolicy(nameof(AddressBook.Api),
+                options.AddPolicy(nameof(AddressBook),
                     builder =>
                     {
                         builder.WithOrigins()
@@ -50,6 +52,26 @@ namespace AddressBook
                     config.RegisterValidatorsFromAssemblyContaining<Startup>();
                     config.ImplicitlyValidateChildProperties = true;
                 });
+
+            #region Api versioning
+
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
+            services.AddApiVersioning(options =>
+            {
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+                options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
+            });
+
+            #endregion Api versioning
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AddressBook.Api", Version = "v1" });
@@ -79,6 +101,8 @@ namespace AddressBook
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(nameof(AddressBook));
 
             app.UseAuthorization();
 
