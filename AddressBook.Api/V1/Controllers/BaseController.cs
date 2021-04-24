@@ -7,7 +7,7 @@ namespace AddressBook.Api.V1.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
-    [EnableCors("AddressBook.Api")]
+    [EnableCors("AddressBook")]
     [Route("api/v{version:apiVersion}/[controller]")]
     public abstract class BaseController : ControllerBase
     {
