@@ -2,7 +2,7 @@
 
 namespace AddressBook.Domain.Models
 {
-    public class BaseZipCode<TCountry, TState, TCity> : BaseModel<int>
+    public abstract class BaseZipCode<TCountry, TState, TCity> : BaseModel<int>
         where TCountry : new()
         where TState : new()
         where TCity : new()
@@ -13,7 +13,7 @@ namespace AddressBook.Domain.Models
 
         public TCountry Country { get; set; }
 
-        public int StateId { get; set; }
+        public int? StateId { get; set; }
 
         public TState State { get; set; }
 

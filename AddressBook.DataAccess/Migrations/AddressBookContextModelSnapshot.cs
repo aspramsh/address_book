@@ -63,6 +63,10 @@ namespace AddressBook.DataAccess.Migrations
                     b.HasIndex("ZipCodeId")
                         .HasDatabaseName("ix_address_zip_code_id");
 
+                    b.HasIndex("ContactId", "ZipCodeId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_address_contact_id_zip_code_id");
+
                     b.ToTable("address");
                 });
 
@@ -168,6 +172,7 @@ namespace AddressBook.DataAccess.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Code")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("code");
 
@@ -179,9 +184,13 @@ namespace AddressBook.DataAccess.Migrations
                     b.HasKey("Id")
                         .HasName("pk_country");
 
-                    b.HasIndex("Name", "Code")
+                    b.HasIndex("Code")
                         .IsUnique()
-                        .HasDatabaseName("ix_country_name_code");
+                        .HasDatabaseName("ix_country_code");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_country_name");
 
                     b.ToTable("country");
                 });
@@ -222,6 +231,10 @@ namespace AddressBook.DataAccess.Migrations
 
                     b.HasIndex("ContactId")
                         .HasDatabaseName("ix_phone_number_contact_id");
+
+                    b.HasIndex("Phone", "PhoneType", "ContactId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_phone_number_phone_phone_type_contact_id");
 
                     b.ToTable("phone_number");
                 });
@@ -281,7 +294,7 @@ namespace AddressBook.DataAccess.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("country_id");
 
-                    b.Property<int>("StateId")
+                    b.Property<int?>("StateId")
                         .HasColumnType("integer")
                         .HasColumnName("state_id");
 
@@ -388,8 +401,7 @@ namespace AddressBook.DataAccess.Migrations
                         .WithMany("ZipCodes")
                         .HasForeignKey("StateId")
                         .HasConstraintName("fk_zip_code_state_state_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("City");
 

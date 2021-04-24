@@ -2,7 +2,7 @@
 
 namespace AddressBook.Domain.Models
 {
-    public class BaseAddress<TZipCode, TContact> : BaseAuditableModel<int>
+    public abstract class BaseAddress<TZipCode, TContact> : BaseAuditableModel<int>
         where TZipCode : new()
         where TContact : new()
     {

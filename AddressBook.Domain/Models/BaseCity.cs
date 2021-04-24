@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AddressBook.Domain.Models
 {
-    public class BaseCity<TCountry, TState, TZipCode> : BaseModel<int>
+    public abstract class BaseCity<TCountry, TState, TZipCode> : BaseModel<int>
         where TCountry : new()
         where TState : new()
         where TZipCode : new()

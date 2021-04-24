@@ -15,7 +15,7 @@ namespace AddressBook.DataAccess.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "text", nullable: false),
-                    code = table.Column<string>(type: "text", nullable: true)
+                    code = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,7 +81,7 @@ namespace AddressBook.DataAccess.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     code = table.Column<string>(type: "text", nullable: false),
                     country_id = table.Column<int>(type: "integer", nullable: false),
-                    state_id = table.Column<int>(type: "integer", nullable: false),
+                    state_id = table.Column<int>(type: "integer", nullable: true),
                     city_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -180,6 +180,12 @@ namespace AddressBook.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "ix_address_contact_id_zip_code_id",
+                table: "address",
+                columns: new[] { "contact_id", "zip_code_id" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_address_zip_code_id",
                 table: "address",
                 column: "zip_code_id");
@@ -202,15 +208,27 @@ namespace AddressBook.DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_country_name_code",
+                name: "ix_country_code",
                 table: "country",
-                columns: new[] { "name", "code" },
+                column: "code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_country_name",
+                table: "country",
+                column: "name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_phone_number_contact_id",
                 table: "phone_number",
                 column: "contact_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_phone_number_phone_phone_type_contact_id",
+                table: "phone_number",
+                columns: new[] { "phone", "phone_type", "contact_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_state_country_id",
