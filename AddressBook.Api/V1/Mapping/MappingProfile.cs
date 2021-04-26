@@ -10,8 +10,8 @@ namespace AddressBook.Api.V1.Mapping
         public MappingProfile()
         {
             CreateMap<StateCreateRequestModel, StateModel>();
-            CreateMap<StateModel, StateViewModel>();
             CreateMap<CountryModel, CountryViewModel>();
+            CreateMap<StateModel, StateViewModel>();
         }
     }
 }

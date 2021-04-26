@@ -10,5 +10,6 @@
         localadmin,
         county,
         neighbourhood,
+        borough,
     }
 }

@@ -43,7 +43,7 @@ namespace AddressBook.Business.Services
 
             var state = geolocations.FirstOrDefault(x => x.Type == LocationType.region
             && x.Name?.ToLower() == model.Name.ToLower()
-            && x.Country?.ToLower() == model.Country?.Name);
+            && x.Country?.ToLower() == model.Country?.Name?.ToLower());
 
             if (state == default)
             {
