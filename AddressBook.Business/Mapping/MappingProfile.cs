@@ -1,4 +1,5 @@
-﻿using AddressBook.Business.Models;
+﻿using AddressBook.Business.Geocoders.Models;
+using AddressBook.Business.Models;
 using AddressBook.DataAccess.Entities;
 using AutoMapper;
 
@@ -28,6 +29,10 @@ namespace AddressBook.Business.Mapping
 
             CreateMap<ZipCodeModel, ZipCode>()
                 .ReverseMap();
+
+            CreateMap<LocationModel, GeoLocationModel>()
+                .ForMember(dest => dest.TimeZone,
+                opt => opt.MapFrom(src => src.Timezone.name));
         }
     }
 }

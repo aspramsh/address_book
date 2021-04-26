@@ -11,9 +11,6 @@ namespace AddressBook.Api.V1.Validation
                 .NotEmpty()
                 .MinimumLength(2);
 
-            RuleFor(x => x.Name)
-                .NotEmpty();
-
             RuleFor(x => x.CountryId)
                 .GreaterThanOrEqualTo(1);
         }

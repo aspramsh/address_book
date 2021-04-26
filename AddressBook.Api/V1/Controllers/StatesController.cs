@@ -1,5 +1,6 @@
 ﻿using AddressBook.Api.V1.Models.RequestModels;
 using AddressBook.Api.V1.Models.ViewModels;
+using AddressBook.Business.Facades.Interfaces;
 using AddressBook.Business.Models;
 using AddressBook.Business.Services.Interfaces;
 using AutoMapper;
@@ -13,16 +14,16 @@ namespace AddressBook.Api.V1.Controllers
     public class StatesController : BaseController
     {
         private readonly IMapper _mapper;
-        private readonly IStateService _stateService;
+        private readonly IStateFacade _stateFacade;
 
         public StatesController(
             ILogger<StatesController> logger,
             IMapper mapper,
-            IStateService stateService)
+            IStateFacade stateFacade)
             : base(logger, mapper)
         {
             _mapper = mapper;
-            _stateService = stateService;
+            _stateFacade = stateFacade;
         }
 
         [HttpPost]
@@ -32,7 +33,7 @@ namespace AddressBook.Api.V1.Controllers
         {
             var stateModel = _mapper.Map<StateModel>(model);
 
-            var created = await _stateService.CreateSingleAsync(stateModel, cancellationToken);
+            var created = await _stateFacade.CreateAsync(stateModel, cancellationToken);
             
             return _mapper.Map<StateViewModel>(created);
         }
