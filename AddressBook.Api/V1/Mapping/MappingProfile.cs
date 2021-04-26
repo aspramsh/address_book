@@ -11,6 +11,7 @@ namespace AddressBook.Api.V1.Mapping
         {
             CreateMap<StateCreateRequestModel, StateModel>();
             CreateMap<StateModel, StateViewModel>();
+            CreateMap<CountryModel, CountryViewModel>();
         }
     }
 }
