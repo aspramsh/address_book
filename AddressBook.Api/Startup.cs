@@ -1,4 +1,7 @@
+using AddressBook.Api.Configuration;
 using AddressBook.Business;
+using AddressBook.Business.Configuration.Models;
+using AddressBook.Common.Mvc;
 using AddressBook.DataAccess;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -9,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Linq;
 
@@ -27,6 +31,7 @@ namespace AddressBook
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
+            services.AddConfigurations(Configuration);
             services.AddAutoMapper(
                 cfg => { cfg.AllowNullCollections = true; },
                 AppDomain.CurrentDomain.GetAssemblies().Where(x =>
@@ -47,6 +52,10 @@ namespace AddressBook
 
             services
                 .AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                })
                 .AddFluentValidation(config =>
                 {
                     config.RegisterValidatorsFromAssemblyContaining<Startup>();
@@ -79,6 +88,11 @@ namespace AddressBook
             services.AddDatabase(Configuration);
             services.AddRepositories();
             services.RegisterServices();
+            var httpRetryPolicySettings =
+                Configuration.GetSection(nameof(HttpRetryPolicySettings)).Get<HttpRetryPolicySettings>();
+
+            services.RegisterHttpClients(httpRetryPolicySettings);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,6 +113,8 @@ namespace AddressBook
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCustomExceptionHandler();
 
             app.UseRouting();
 
