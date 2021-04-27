@@ -24,6 +24,7 @@ namespace AddressBook.Business
 
             services.AddScoped<IStateFacade, StateFacade>();
             services.AddScoped<ICityFacade, CityFacade>();
+            services.AddScoped<IZipCodeFacade, ZipCodeFacade>();
         }
 
         public static void RegisterHttpClients(

@@ -11,9 +11,11 @@ namespace AddressBook.Api.V1.Mapping
         {
             CreateMap<StateCreateRequestModel, StateModel>();
             CreateMap<CityCreateRequestModel, CityModel>();
+            CreateMap<ZipCodeCreateRequestModel, ZipCodeModel>();
             CreateMap<CountryModel, CountryViewModel>();
             CreateMap<StateModel, StateViewModel>();
             CreateMap<CityModel, CityViewModel>();
+            CreateMap<ZipCodeModel, ZipCodeViewModel>();
         }
     }
 }

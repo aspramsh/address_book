@@ -6,6 +6,7 @@ using AddressBook.Business.Services.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +14,6 @@ namespace AddressBook.Api.V1.Controllers
 {
     public class StatesController : BaseController
     {
-        private readonly IMapper _mapper;
         private readonly IStateFacade _stateFacade;
 
         public StatesController(
@@ -22,8 +22,17 @@ namespace AddressBook.Api.V1.Controllers
             IStateFacade stateFacade)
             : base(logger, mapper)
         {
-            _mapper = mapper;
             _stateFacade = stateFacade;
+        }
+
+        [HttpGet("{countryId}")]
+        public async Task<ActionResult<List<StateViewModel>>> GetAsync(
+            int countryId,
+            CancellationToken cancellationToken)
+        {
+            var states = await _stateFacade.GetByCountryAsync(countryId, cancellationToken);
+
+            return Mapper.Map<List<StateViewModel>>(states);
         }
 
         [HttpPost]
@@ -31,11 +40,11 @@ namespace AddressBook.Api.V1.Controllers
             StateCreateRequestModel model,
             CancellationToken cancellationToken)
         {
-            var stateModel = _mapper.Map<StateModel>(model);
+            var stateModel = Mapper.Map<StateModel>(model);
 
             var created = await _stateFacade.CreateAsync(stateModel, cancellationToken);
             
-            return _mapper.Map<StateViewModel>(created);
+            return Mapper.Map<StateViewModel>(created);
         }
     }
 }

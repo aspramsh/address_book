@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 
 namespace AddressBook.Business.Facades.Interfaces
 {
-    public interface IStateFacade
+    public interface IZipCodeFacade
     {
-        Task<List<StateModel>> GetByCountryAsync(
+        Task<List<ZipCodeModel>> GetByAsync(
             int countryId,
+            int cityId,
             CancellationToken cancellationToken);
 
-        Task<StateModel> CreateAsync(
-            StateModel model,
+        Task<ZipCodeModel> CreateAsync(
+            ZipCodeModel model,
             CancellationToken cancellationToken);
     }
 }

@@ -16,10 +16,6 @@ namespace AddressBook.Business.Services
 {
     public class CityService : GenericService<CityModel, City>, ICityService
     {
-        private readonly IMapper _mapper;
-
-        private readonly ICityRepository _cityRepository;
-
         private readonly IPositionStackHttpClient _positionStackHttpClient;
 
         public CityService(
@@ -29,8 +25,6 @@ namespace AddressBook.Business.Services
             IPositionStackHttpClient positionStackHttpClient)
             : base(mapper, loggerFactory, entityRepository)
         {
-            _mapper = mapper;
-            _cityRepository = entityRepository;
             _positionStackHttpClient = positionStackHttpClient;
         }
 
@@ -52,14 +46,14 @@ namespace AddressBook.Business.Services
             model.Longitude = city.Longitude;
             model.Latitude = city.Latitude;
 
-            var entity = _mapper.Map<City>(model);
+            var entity = Mapper.Map<City>(model);
             entity.Country = default;
             entity.State = default;
 
-            var created = await _cityRepository.InsertAsync(entity, cancellationToken);
-            await _cityRepository.SaveChangesAsync(cancellationToken);
+            var created = await EntityRepository.InsertAsync(entity, cancellationToken);
+            await EntityRepository.SaveChangesAsync(cancellationToken);
 
-            var result = _mapper.Map<CityModel>(created);
+            var result = Mapper.Map<CityModel>(created);
             result.Country = model.Country;
             result.State = model.State;
 

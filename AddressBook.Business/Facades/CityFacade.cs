@@ -1,7 +1,11 @@
 ﻿using AddressBook.Business.Facades.Interfaces;
 using AddressBook.Business.Models;
 using AddressBook.Business.Services.Interfaces;
+using AddressBook.Common.Includable;
 using AddressBook.Common.Mvc.Exceptions;
+using AddressBook.DataAccess.Entities;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,6 +27,19 @@ namespace AddressBook.Business.Facades
             _countryService = countryService;
             _stateService = stateService;
             _cityService = cityService;
+        }
+
+        public async Task<List<CityModel>> GetByCountryAsync(
+            int countryId,
+            CancellationToken cancellationToken)
+        {
+            var included = new Func<IIncludable<City>, IIncludable>(x => x
+            .Include(i => i.Country)
+            .Include(i => i.State));
+
+            var cities = await _cityService.FindByAsync(x => x.CountryId == countryId, included, cancellationToken: cancellationToken);
+
+            return cities;
         }
 
         public async Task<CityModel> CreateAsync(
