@@ -9,7 +9,7 @@ namespace AddressBook.DataAccess.Configurations
         public void Configure(EntityTypeBuilder<City> builder)
         {
             builder.Property(m => m.Name).IsRequired();
-            builder.HasIndex(x => new { x.StateId, x.Name }).IsUnique();
+            builder.HasIndex(x => new { x.CountryId, x.StateId, x.Name }).IsUnique();
 
             builder.HasOne(t => t.State)
                 .WithMany(m => m.Cities)

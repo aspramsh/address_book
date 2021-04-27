@@ -7,5 +7,9 @@
         address,
         country,
         venue,
+        localadmin,
+        county,
+        neighbourhood,
+        borough,
     }
 }
