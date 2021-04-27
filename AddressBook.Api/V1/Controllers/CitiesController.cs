@@ -5,6 +5,7 @@ using AddressBook.Business.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,6 @@ namespace AddressBook.Api.V1.Controllers
 {
     public class CitiesController : BaseController
     {
-        private readonly IMapper _mapper;
         private readonly ICityFacade _cityFacade;
 
         public CitiesController(
@@ -21,8 +21,17 @@ namespace AddressBook.Api.V1.Controllers
             ICityFacade cityFacade)
             : base(logger, mapper)
         {
-            _mapper = mapper;
             _cityFacade = cityFacade;
+        }
+
+        [HttpGet("{countryId}")]
+        public async Task<ActionResult<List<CityViewModel>>> GetAsync(
+            int countryId,
+            CancellationToken cancellationToken)
+        {
+            var cities = await _cityFacade.GetByCountryAsync(countryId, cancellationToken);
+
+            return Mapper.Map<List<CityViewModel>>(cities);
         }
 
         [HttpPost]
@@ -30,11 +39,11 @@ namespace AddressBook.Api.V1.Controllers
             CityCreateRequestModel model,
             CancellationToken cancellationToken)
         {
-            var cityModel = _mapper.Map<CityModel>(model);
+            var cityModel = Mapper.Map<CityModel>(model);
 
             var created = await _cityFacade.CreateAsync(cityModel, cancellationToken);
 
-            return _mapper.Map<CityViewModel>(created);
+            return Mapper.Map<CityViewModel>(created);
         }
     }
 }

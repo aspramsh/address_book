@@ -5,6 +5,7 @@ using AddressBook.Common.Includable;
 using AddressBook.Common.Mvc.Exceptions;
 using AddressBook.DataAccess.Entities;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,6 +23,21 @@ namespace AddressBook.Business.Facades
         {
             _zipCodeService = zipCodeService;
             _cityService = cityService;
+        }
+
+        public async Task<List<ZipCodeModel>> GetByAsync(
+            int countryId,
+            int cityId,
+            CancellationToken cancellationToken)
+        {
+            var included = new Func<IIncludable<ZipCode>, IIncludable>(x => x
+            .Include(i => i.State)
+            .Include(i => i.City)
+            .ThenInclude(i => i.Country));
+
+            var states = await _zipCodeService.FindByAsync(x => x.CountryId == countryId && x.CityId == cityId, included, cancellationToken: cancellationToken);
+
+            return states;
         }
 
         public async Task<ZipCodeModel> CreateAsync(

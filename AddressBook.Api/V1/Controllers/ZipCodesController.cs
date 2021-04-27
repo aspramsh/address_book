@@ -5,6 +5,7 @@ using AddressBook.Business.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,6 @@ namespace AddressBook.Api.V1.Controllers
 {
     public class ZipCodesController : BaseController
     {
-        private readonly IMapper _mapper;
         private readonly IZipCodeFacade _zipCodeFacade;
 
         public ZipCodesController(
@@ -21,8 +21,18 @@ namespace AddressBook.Api.V1.Controllers
             IZipCodeFacade zipCodeFacade)
             : base(logger, mapper)
         {
-            _mapper = mapper;
             _zipCodeFacade = zipCodeFacade;
+        }
+
+        [HttpGet("countryId={countryId}/cityId={cityId}")]
+        public async Task<ActionResult<List<ZipCodeViewModel>>> GetAsync(
+            int countryId,
+            int cityId,
+            CancellationToken cancellationToken)
+        {
+            var zipCodes = await _zipCodeFacade.GetByAsync(countryId, cityId, cancellationToken);
+
+            return Mapper.Map<List<ZipCodeViewModel>>(zipCodes);
         }
 
         [HttpPost]
@@ -30,11 +40,11 @@ namespace AddressBook.Api.V1.Controllers
             ZipCodeCreateRequestModel model,
             CancellationToken cancellationToken)
         {
-            var zipCodeModel = _mapper.Map<ZipCodeModel>(model);
+            var zipCodeModel = Mapper.Map<ZipCodeModel>(model);
 
             var created = await _zipCodeFacade.CreateAsync(zipCodeModel, cancellationToken);
 
-            return _mapper.Map<ZipCodeViewModel>(created);
+            return Mapper.Map<ZipCodeViewModel>(created);
         }
     }
 }

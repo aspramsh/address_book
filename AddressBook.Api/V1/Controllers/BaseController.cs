@@ -12,6 +12,7 @@ namespace AddressBook.Api.V1.Controllers
     public abstract class BaseController : ControllerBase
     {
         protected ILogger Logger { get; }
+
         protected IMapper Mapper { get; }
 
         public BaseController(ILogger logger, IMapper mapper) 

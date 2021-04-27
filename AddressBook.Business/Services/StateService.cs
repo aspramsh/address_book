@@ -17,10 +17,6 @@ namespace AddressBook.Business.Services
 {
     public class StateService : GenericService<StateModel, State>, IStateService
     {
-        private readonly IMapper _mapper;
-
-        private readonly IStateRepository _stateRepository;
-
         private readonly IPositionStackHttpClient _positionStackHttpClient;
 
         public StateService(
@@ -30,8 +26,6 @@ namespace AddressBook.Business.Services
             IPositionStackHttpClient positionStackHttpClient)
             : base(mapper, loggerFactory, entityRepository)
         {
-            _mapper = mapper;
-            _stateRepository = entityRepository;
             _positionStackHttpClient = positionStackHttpClient;
         }
 
@@ -52,13 +46,13 @@ namespace AddressBook.Business.Services
 
             model.Code = state.RegionCode;
 
-            var entity = _mapper.Map<State>(model);
+            var entity = Mapper.Map<State>(model);
             entity.Country = default;
 
-            var created = await _stateRepository.InsertAsync(entity, cancellationToken);
-            await _stateRepository.SaveChangesAsync(cancellationToken);
+            var created = await EntityRepository.InsertAsync(entity, cancellationToken);
+            await EntityRepository.SaveChangesAsync(cancellationToken);
 
-            var result = _mapper.Map<StateModel>(created);
+            var result = Mapper.Map<StateModel>(created);
             result.Country = model.Country;
 
             return result;
