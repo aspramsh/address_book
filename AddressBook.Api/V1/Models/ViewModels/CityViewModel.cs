@@ -6,8 +6,8 @@
 
         public string Name { get; set; }
 
-        public string Code { get; set; }
+        public CountryViewModel Country { get; set; }
 
-        public int CountryId { get; set; }
+        public StateViewModel State { get; set; }
     }
 }
