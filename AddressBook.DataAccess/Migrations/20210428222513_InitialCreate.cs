@@ -108,31 +108,6 @@ namespace AddressBook.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "address",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    created_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
-                    updated_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    street = table.Column<string>(type: "text", nullable: true),
-                    building = table.Column<int>(type: "integer", nullable: false),
-                    appartment = table.Column<int>(type: "integer", nullable: false),
-                    zip_code_id = table.Column<int>(type: "integer", nullable: false),
-                    contact_id = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_address", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_address_zip_code_zip_code_id",
-                        column: x => x.zip_code_id,
-                        principalTable: "zip_code",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "contact",
                 columns: table => new
                 {
@@ -143,17 +118,20 @@ namespace AddressBook.DataAccess.Migrations
                     first_name = table.Column<string>(type: "text", nullable: false),
                     last_name = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
-                    address_id = table.Column<int>(type: "integer", nullable: true)
+                    street = table.Column<string>(type: "text", nullable: true),
+                    building = table.Column<int>(type: "integer", nullable: true),
+                    appartment = table.Column<int>(type: "integer", nullable: true),
+                    zip_code_id = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_contact", x => x.id);
                     table.ForeignKey(
-                        name: "fk_contact_address_address_id",
-                        column: x => x.address_id,
-                        principalTable: "address",
+                        name: "fk_contact_zip_code_zip_code_id",
+                        column: x => x.zip_code_id,
+                        principalTable: "zip_code",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -180,17 +158,6 @@ namespace AddressBook.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_address_contact_id_zip_code_id",
-                table: "address",
-                columns: new[] { "contact_id", "zip_code_id" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_address_zip_code_id",
-                table: "address",
-                column: "zip_code_id");
-
-            migrationBuilder.CreateIndex(
                 name: "ix_city_country_id_state_id_name",
                 table: "city",
                 columns: new[] { "country_id", "state_id", "name" },
@@ -202,10 +169,15 @@ namespace AddressBook.DataAccess.Migrations
                 column: "state_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_contact_address_id",
+                name: "ix_contact_email",
                 table: "contact",
-                column: "address_id",
+                column: "email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_contact_zip_code_id",
+                table: "contact",
+                column: "zip_code_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_country_code",
@@ -265,9 +237,6 @@ namespace AddressBook.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "contact");
-
-            migrationBuilder.DropTable(
-                name: "address");
 
             migrationBuilder.DropTable(
                 name: "zip_code");

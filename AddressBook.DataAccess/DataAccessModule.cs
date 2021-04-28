@@ -20,7 +20,6 @@ namespace AddressBook.DataAccess
         public static void AddRepositories(
             this IServiceCollection services)
         {
-            services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<IContactRepository, ContactRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AddressBook.DataAccess.Migrations
 {
     [DbContext(typeof(AddressBookContext))]
-    [Migration("20210427190209_InitialCreate")]
+    [Migration("20210428222513_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,57 +20,6 @@ namespace AddressBook.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("AddressBook.DataAccess.Entities.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("Appartment")
-                        .HasColumnType("integer")
-                        .HasColumnName("appartment");
-
-                    b.Property<int>("Building")
-                        .HasColumnType("integer")
-                        .HasColumnName("building");
-
-                    b.Property<int>("ContactId")
-                        .HasColumnType("integer")
-                        .HasColumnName("contact_id");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("created_date")
-                        .HasDefaultValueSql("NOW()");
-
-                    b.Property<string>("Street")
-                        .HasColumnType("text")
-                        .HasColumnName("street");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("updated_date");
-
-                    b.Property<int>("ZipCodeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("zip_code_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_address");
-
-                    b.HasIndex("ZipCodeId")
-                        .HasDatabaseName("ix_address_zip_code_id");
-
-                    b.HasIndex("ContactId", "ZipCodeId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_address_contact_id_zip_code_id");
-
-                    b.ToTable("address");
-                });
 
             modelBuilder.Entity("AddressBook.DataAccess.Entities.City", b =>
                 {
@@ -126,9 +75,13 @@ namespace AddressBook.DataAccess.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int?>("AddressId")
+                    b.Property<int?>("Appartment")
                         .HasColumnType("integer")
-                        .HasColumnName("address_id");
+                        .HasColumnName("appartment");
+
+                    b.Property<int?>("Building")
+                        .HasColumnType("integer")
+                        .HasColumnName("building");
 
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
@@ -151,16 +104,27 @@ namespace AddressBook.DataAccess.Migrations
                         .HasColumnType("text")
                         .HasColumnName("last_name");
 
+                    b.Property<string>("Street")
+                        .HasColumnType("text")
+                        .HasColumnName("street");
+
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_date");
 
+                    b.Property<int?>("ZipCodeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("zip_code_id");
+
                     b.HasKey("Id")
                         .HasName("pk_contact");
 
-                    b.HasIndex("AddressId")
+                    b.HasIndex("Email")
                         .IsUnique()
-                        .HasDatabaseName("ix_contact_address_id");
+                        .HasDatabaseName("ix_contact_email");
+
+                    b.HasIndex("ZipCodeId")
+                        .HasDatabaseName("ix_contact_zip_code_id");
 
                     b.ToTable("contact");
                 });
@@ -316,18 +280,6 @@ namespace AddressBook.DataAccess.Migrations
                     b.ToTable("zip_code");
                 });
 
-            modelBuilder.Entity("AddressBook.DataAccess.Entities.Address", b =>
-                {
-                    b.HasOne("AddressBook.DataAccess.Entities.ZipCode", "ZipCode")
-                        .WithMany()
-                        .HasForeignKey("ZipCodeId")
-                        .HasConstraintName("fk_address_zip_code_zip_code_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ZipCode");
-                });
-
             modelBuilder.Entity("AddressBook.DataAccess.Entities.City", b =>
                 {
                     b.HasOne("AddressBook.DataAccess.Entities.Country", "Country")
@@ -350,13 +302,12 @@ namespace AddressBook.DataAccess.Migrations
 
             modelBuilder.Entity("AddressBook.DataAccess.Entities.Contact", b =>
                 {
-                    b.HasOne("AddressBook.DataAccess.Entities.Address", "Address")
-                        .WithOne("Contact")
-                        .HasForeignKey("AddressBook.DataAccess.Entities.Contact", "AddressId")
-                        .HasConstraintName("fk_contact_address_address_id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("AddressBook.DataAccess.Entities.ZipCode", "ZipCode")
+                        .WithMany()
+                        .HasForeignKey("ZipCodeId")
+                        .HasConstraintName("fk_contact_zip_code_zip_code_id");
 
-                    b.Navigation("Address");
+                    b.Navigation("ZipCode");
                 });
 
             modelBuilder.Entity("AddressBook.DataAccess.Entities.PhoneNumber", b =>
@@ -410,11 +361,6 @@ namespace AddressBook.DataAccess.Migrations
                     b.Navigation("Country");
 
                     b.Navigation("State");
-                });
-
-            modelBuilder.Entity("AddressBook.DataAccess.Entities.Address", b =>
-                {
-                    b.Navigation("Contact");
                 });
 
             modelBuilder.Entity("AddressBook.DataAccess.Entities.City", b =>

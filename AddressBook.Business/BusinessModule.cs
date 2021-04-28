@@ -14,7 +14,6 @@ namespace AddressBook.Business
     {
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<IContactService, ContactService>();
             services.AddScoped<ICountryService, CountryService>();
@@ -25,6 +24,7 @@ namespace AddressBook.Business
             services.AddScoped<IStateFacade, StateFacade>();
             services.AddScoped<ICityFacade, CityFacade>();
             services.AddScoped<IZipCodeFacade, ZipCodeFacade>();
+            services.AddScoped<IContactFacade, ContactFacade>();
         }
 
         public static void RegisterHttpClients(

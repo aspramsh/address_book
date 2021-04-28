@@ -2,7 +2,7 @@
 
 namespace AddressBook.DataAccess.Entities
 {
-    public class Contact : BaseContact<Address, PhoneNumber>
+    public class Contact : BaseContact<PhoneNumber, ZipCode>
     {
     }
 }

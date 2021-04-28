@@ -9,9 +9,6 @@ namespace AddressBook.Business.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<AddressModel, Address>()
-                .ReverseMap();
-
             CreateMap<CityModel, City>()
                 .ReverseMap();
 

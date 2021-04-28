@@ -12,8 +12,6 @@ namespace AddressBook.DataAccess
         {
         }
 
-        public DbSet<Address> Address { get; set; }
-
         public DbSet<City> City { get; set; }
 
         public DbSet<Contact> Contact { get; set; }
@@ -28,8 +26,6 @@ namespace AddressBook.DataAccess
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfiguration(new AddressConfiguration());
-
             builder.ApplyConfiguration(new CityConfiguration());
 
             builder.ApplyConfiguration(new ContactConfiguration());
