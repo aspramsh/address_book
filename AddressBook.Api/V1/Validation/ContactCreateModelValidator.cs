@@ -25,6 +25,9 @@ namespace AddressBook.Api.V1.Validation
 
             RuleFor(x => x.PhoneNumbers)
                 .NotEmpty();
+
+            RuleForEach(x => x.PhoneNumbers)
+                .SetValidator(new PhoneNumberCreateModelValidator());
         }
     }
 }

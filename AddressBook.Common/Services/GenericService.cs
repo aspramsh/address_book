@@ -74,6 +74,7 @@ namespace AddressBook.Common.Services
 
             var entities = await query
                 .AsNoTracking()
+                .IncludeMultiple(includes)
                 .ToListAsync(cancellationToken);
 
             return Mapper.Map<List<TModel>>(entities);
