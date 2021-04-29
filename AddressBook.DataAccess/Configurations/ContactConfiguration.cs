@@ -16,10 +16,7 @@ namespace AddressBook.DataAccess.Configurations
 
             builder.Property(m => m.Email).IsRequired();
 
-            builder.HasOne(a => a.Address)
-                .WithOne(c => c.Contact)
-                .HasForeignKey<Contact>(a => a.AddressId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasIndex(x => new { x.Email }).IsUnique();
         }
     }
 }

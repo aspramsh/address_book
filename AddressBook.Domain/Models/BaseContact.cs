@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace AddressBook.Domain.Models
 {
-    public abstract class BaseContact<TAddress, TPhoneNumber> : BaseAuditableModel<int>
-        where TAddress : new()
+    public abstract class BaseContact<TPhoneNumber, TZipCode> : BaseAuditableModel<int>
         where TPhoneNumber : new()
+        where TZipCode : new()
     {
         public string FirstName { get; set; }
 
@@ -13,11 +13,17 @@ namespace AddressBook.Domain.Models
 
         public string Email { get; set; }
 
+        public string Street { get; set; }
+
+        public int? Building { get; set; }
+
+        public int? Appartment { get; set; }
+
         #region Relations
 
-        public int? AddressId { get; set; }
+        public int? ZipCodeId { get; set; }
 
-        public TAddress Address { get; set; }
+        public TZipCode ZipCode { get; set; }
 
         public IEnumerable<TPhoneNumber> PhoneNumbers { get; set; }
 

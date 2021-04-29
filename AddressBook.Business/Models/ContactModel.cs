@@ -2,7 +2,7 @@
 
 namespace AddressBook.Business.Models
 {
-    public class ContactModel : BaseContact<AddressModel, PhoneNumberModel>
+    public class ContactModel : BaseContact<PhoneNumberModel, ZipCodeModel>
     {
     }
 }
