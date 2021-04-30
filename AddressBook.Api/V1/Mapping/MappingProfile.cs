@@ -14,6 +14,7 @@ namespace AddressBook.Api.V1.Mapping
             CreateMap<ZipCodeCreateRequestModel, ZipCodeModel>();
             CreateMap<PhoneNumberCreateRequestModel, PhoneNumberModel>();
             CreateMap<ContactCreateRequestModel, ContactModel>();
+            CreateMap<ContactUpdateRequestModel, ContactModel>();
 
             CreateMap<CountryModel, CountryViewModel>();
             CreateMap<StateModel, StateViewModel>();
