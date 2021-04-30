@@ -71,5 +71,43 @@ namespace AddressBook.Business.Facades
 
             return created;
         }
+
+        public async Task UpdateAsync(
+            ContactModel model,
+            CancellationToken cancellationToken)
+        {
+            var existingZipCode = await _zipCodeService.GetFirstOrDefaultAsync(
+                x => x.Id == model.ZipCodeId, cancellationToken: cancellationToken);
+            var existingContact = await _contactService.GetFirstOrDefaultAsync(
+                x => x.Id == model.Id,
+                cancellationToken: cancellationToken);
+
+            if (existingContact == default)
+            {
+                throw new BadRequestException($"{model.Email} contact does not exist");
+            }
+
+            model.ZipCode = existingZipCode ?? throw new NotFoundException($"Zip code ID {model.ZipCodeId} does not exist.");
+            
+            _contactService.Update(model);
+            await _contactService.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteAsync(
+            int id,
+            CancellationToken cancellationToken)
+        {
+            var existingContact = await _contactService.GetFirstOrDefaultAsync(
+                x => x.Id == id,
+                cancellationToken: cancellationToken);
+
+            if (existingContact == default)
+            {
+                throw new BadRequestException($"{id} contact does not exist");
+            }
+
+            _contactService.Delete(existingContact);
+            await _contactService.SaveChangesAsync(cancellationToken);
+        }
     }
 }

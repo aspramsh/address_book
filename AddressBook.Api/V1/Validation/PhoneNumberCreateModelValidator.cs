@@ -9,7 +9,7 @@ namespace AddressBook.Api.V1.Validation
         {
             RuleFor(x => x.Phone)
                 .NotEmpty()
-                .Length(10);
+                .Length(11);
         }
     }
 }

@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,6 +59,34 @@ namespace AddressBook.Api.V1.Controllers
             var created = await _contactFacade.CreateAsync(contactModel, cancellationToken);
 
             return Mapper.Map<ContactViewModel>(created);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(
+            [Range(1, int.MaxValue)] int id,
+            ContactUpdateRequestModel model,
+            CancellationToken cancellationToken)
+        {
+            if (id != model.Id)
+            {
+                return BadRequest(new { errorMessage = "Invalid ID." });
+            }
+
+            var contactModel = Mapper.Map<ContactModel>(model);
+
+            await _contactFacade.UpdateAsync(contactModel, cancellationToken);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ContactViewModel>> DeleteAsync(
+            [Range(1, int.MaxValue)] int id,
+            CancellationToken cancellationToken)
+        {
+            await _contactFacade.DeleteAsync(id, cancellationToken);
+
+            return NoContent();
         }
     }
 }

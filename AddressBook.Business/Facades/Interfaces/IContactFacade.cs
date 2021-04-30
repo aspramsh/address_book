@@ -17,5 +17,13 @@ namespace AddressBook.Business.Facades.Interfaces
         Task<ContactModel> CreateAsync(
             ContactModel model,
             CancellationToken cancellationToken);
+
+        Task UpdateAsync(
+            ContactModel model,
+            CancellationToken cancellationToken);
+
+        Task DeleteAsync(
+            int id,
+            CancellationToken cancellationToken);
     }
 }
