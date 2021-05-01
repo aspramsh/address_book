@@ -4,8 +4,10 @@ using AddressBook.Business.Services.Interfaces;
 using AddressBook.Common.Includable;
 using AddressBook.Common.Mvc.Exceptions;
 using AddressBook.DataAccess.Entities;
+using LinqKit;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,14 +30,26 @@ namespace AddressBook.Business.Facades
         public async Task<List<ZipCodeModel>> GetByAsync(
             int countryId,
             int cityId,
+            string searchValue,
             CancellationToken cancellationToken)
         {
             var included = new Func<IIncludable<ZipCode>, IIncludable>(x => x
-            .Include(i => i.State)
-            .Include(i => i.City)
-            .ThenInclude(i => i.Country));
+                .Include(i => i.State)
+                .Include(i => i.City)
+                .ThenInclude(i => i.Country));
 
-            var states = await _zipCodeService.FindByAsync(x => x.CountryId == countryId && x.CityId == cityId, included, cancellationToken: cancellationToken);
+            Expression<Func<ZipCode, bool>> predicate = x => x.CountryId == countryId
+                && x.CityId == cityId;
+
+            if (!string.IsNullOrWhiteSpace(searchValue))
+            {
+                predicate = predicate.And(x => x.Code.ToLower().Contains(searchValue.ToLower()));
+            }
+
+            var states = await _zipCodeService.FindByAsync(
+                predicate,
+                included,
+                cancellationToken: cancellationToken);
 
             return states;
         }

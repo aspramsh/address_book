@@ -10,6 +10,7 @@ namespace AddressBook.Business.Facades.Interfaces
         Task<List<ZipCodeModel>> GetByAsync(
             int countryId,
             int cityId,
+            string searchValue,
             CancellationToken cancellationToken);
 
         Task<ZipCodeModel> CreateAsync(

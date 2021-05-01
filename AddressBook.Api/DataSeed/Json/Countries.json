@@ -1,0 +1,17 @@
+[
+  {
+    "Id": 1,
+    "name": "United States of America",
+    "code": "USA"
+  },
+  {
+    "Id": 2,
+    "name": "Canada",
+    "code": "Canada"
+  },
+  {
+    "Id": 3,
+    "name": "Armenia",
+    "code": "Armenia"
+  }
+]

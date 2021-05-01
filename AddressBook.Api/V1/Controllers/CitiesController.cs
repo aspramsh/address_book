@@ -27,9 +27,10 @@ namespace AddressBook.Api.V1.Controllers
         [HttpGet("{countryId}")]
         public async Task<ActionResult<List<CityViewModel>>> GetAsync(
             int countryId,
+            string searchValue,
             CancellationToken cancellationToken)
         {
-            var cities = await _cityFacade.GetByCountryAsync(countryId, cancellationToken);
+            var cities = await _cityFacade.GetByCountryAsync(countryId, searchValue, cancellationToken);
 
             return Mapper.Map<List<CityViewModel>>(cities);
         }
