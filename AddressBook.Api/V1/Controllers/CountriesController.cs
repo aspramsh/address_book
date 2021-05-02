@@ -28,8 +28,8 @@ namespace AddressBook.Api.V1.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<CountryViewModel>>> GetAsync(
-            string searchValue,
-            CancellationToken cancellationToken)
+            string searchValue = default,
+            CancellationToken cancellationToken = default)
         {
             Expression<Func<Country, bool>> predicate = x => true;
             if (!string.IsNullOrWhiteSpace(searchValue))
