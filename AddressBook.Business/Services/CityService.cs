@@ -8,6 +8,7 @@ using AddressBook.DataAccess.Entities;
 using AddressBook.DataAccess.Repositories.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,19 +33,26 @@ namespace AddressBook.Business.Services
             CityModel model,
             CancellationToken cancellationToken)
         {
-            var geolocations = await _positionStackHttpClient.GetPlaceAsync(model.Name, cancellationToken);
-
-            var city = geolocations.FirstOrDefault(x => x.Type == LocationType.locality
-            && x.Name?.ToLower() == model.Name.ToLower()
-            && x.Country?.ToLower() == model.Country?.Name?.ToLower());
-
-            if (city == default)
+            try
             {
-                throw new BadRequestException("City name is invalid.");
-            }
+                var geolocations = await _positionStackHttpClient.GetPlaceAsync(model.Name, cancellationToken);
 
-            model.Longitude = city.Longitude;
-            model.Latitude = city.Latitude;
+                var city = geolocations.FirstOrDefault(x => x.Type == LocationType.locality
+                && x.Name?.ToLower() == model.Name.ToLower()
+                && x.Country?.ToLower() == model.Country?.Name?.ToLower());
+
+                if (city == default)
+                {
+                    throw new BadRequestException("City name is invalid.");
+                }
+
+                model.Longitude = city.Longitude;
+                model.Latitude = city.Latitude;
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError(exception, "Unable to validate city.");
+            }
 
             var entity = Mapper.Map<City>(model);
             entity.Country = default;
