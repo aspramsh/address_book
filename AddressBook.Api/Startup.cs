@@ -1,8 +1,10 @@
 using AddressBook.Api.Configuration;
 using AddressBook.Business;
 using AddressBook.Business.Configuration.Models;
+using AddressBook.Common.Helpers;
 using AddressBook.Common.Mvc;
 using AddressBook.DataAccess;
+using AddressBook.DataAccess.DataSeeds;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -96,7 +98,10 @@ namespace AddressBook
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            IHostApplicationLifetime applicationLifetime)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
@@ -126,6 +131,9 @@ namespace AddressBook
             {
                 endpoints.MapControllers();
             });
+
+            AsyncUtil.RunSync(() => app.ApplicationServices.GetRequiredService<IDataSeed>()
+                .SeedAllInitialDataAsync(applicationLifetime.ApplicationStopping));
         }
     }
 }

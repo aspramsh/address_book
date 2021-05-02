@@ -9,6 +9,7 @@ namespace AddressBook.Business.Facades.Interfaces
     {
         Task<List<CityModel>> GetByCountryAsync(
             int countryId,
+            string searchValue,
             CancellationToken cancellationToken);
 
         Task<CityModel> CreateAsync(

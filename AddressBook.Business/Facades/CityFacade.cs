@@ -4,8 +4,10 @@ using AddressBook.Business.Services.Interfaces;
 using AddressBook.Common.Includable;
 using AddressBook.Common.Mvc.Exceptions;
 using AddressBook.DataAccess.Entities;
+using LinqKit;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,13 +33,21 @@ namespace AddressBook.Business.Facades
 
         public async Task<List<CityModel>> GetByCountryAsync(
             int countryId,
+            string searchValue,
             CancellationToken cancellationToken)
         {
             var included = new Func<IIncludable<City>, IIncludable>(x => x
-            .Include(i => i.Country)
-            .Include(i => i.State));
+                .Include(i => i.Country)
+                .Include(i => i.State));
 
-            var cities = await _cityService.FindByAsync(x => x.CountryId == countryId, included, cancellationToken: cancellationToken);
+            Expression<Func<City, bool>> predicate = x => x.CountryId == countryId;
+
+            if (!string.IsNullOrWhiteSpace(searchValue))
+            {
+                predicate = predicate.And(x => x.Name.ToLower().Contains(searchValue.ToLower()));
+            }
+
+            var cities = await _cityService.FindByAsync(predicate, included, cancellationToken: cancellationToken);
 
             return cities;
         }

@@ -28,9 +28,10 @@ namespace AddressBook.Api.V1.Controllers
         public async Task<ActionResult<List<ZipCodeViewModel>>> GetAsync(
             int countryId,
             int cityId,
+            string searchValue,
             CancellationToken cancellationToken)
         {
-            var zipCodes = await _zipCodeFacade.GetByAsync(countryId, cityId, cancellationToken);
+            var zipCodes = await _zipCodeFacade.GetByAsync(countryId, cityId, searchValue, cancellationToken);
 
             return Mapper.Map<List<ZipCodeViewModel>>(zipCodes);
         }

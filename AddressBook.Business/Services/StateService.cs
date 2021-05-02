@@ -33,18 +33,25 @@ namespace AddressBook.Business.Services
             StateModel model,
             CancellationToken cancellationToken)
         {
-            var geolocations = await _positionStackHttpClient.GetPlaceAsync(model.Name, cancellationToken);
-
-            var state = geolocations.FirstOrDefault(x => x.Type == LocationType.region
-            && x.Name?.ToLower() == model.Name.ToLower()
-            && x.Country?.ToLower() == model.Country?.Name?.ToLower());
-
-            if (state == default)
+            try
             {
-                throw new BadRequestException("State name is invalid.");
-            }
+                var geolocations = await _positionStackHttpClient.GetPlaceAsync(model.Name, cancellationToken);
 
-            model.Code = state.RegionCode;
+                var state = geolocations.FirstOrDefault(x => x.Type == LocationType.region
+                && x.Name?.ToLower() == model.Name.ToLower()
+                && x.Country?.ToLower() == model.Country?.Name?.ToLower());
+
+                if (state == default)
+                {
+                    throw new BadRequestException("State name is invalid.");
+                }
+
+                model.Code = state.RegionCode;
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError(exception, "Unable to validate state");
+            }
 
             var entity = Mapper.Map<State>(model);
             entity.Country = default;

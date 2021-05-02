@@ -69,7 +69,7 @@ namespace AddressBook.Api.V1.Controllers
         {
             if (id != model.Id)
             {
-                return BadRequest(new { errorMessage = "Invalid ID." });
+                return BadRequest(new { errorMessage = "IDs do not match." });
             }
 
             var contactModel = Mapper.Map<ContactModel>(model);

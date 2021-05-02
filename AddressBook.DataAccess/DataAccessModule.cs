@@ -1,4 +1,5 @@
 ﻿using AddressBook.Common.Helpers;
+using AddressBook.DataAccess.DataSeeds;
 using AddressBook.DataAccess.Repositories;
 using AddressBook.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,8 @@ namespace AddressBook.DataAccess
         {
             services.AddDbContext<AddressBookContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString(Constants.ConnectionName)));
+
+            services.AddSingleton<IDataSeed, DataSeed>();
         }
 
         public static void AddRepositories(
